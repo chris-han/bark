@@ -391,14 +391,18 @@ SEMANTIC_INFER_TOKEN = 129_599
 def generate_text_semantic(
     text,
     history_prompt=None,
-    temp=0.7,
+    temp=0,
     top_k=None,
     top_p=None,
+    use_gpu=True,
     silent=False,
     min_eos_p=0.2,
     max_gen_duration_s=None,
     allow_early_stop=True,
     use_kv_caching=False,
+    model=None,
+    base=None,
+    
 ):
     """Generate semantic tokens from text."""
     assert isinstance(text, str)
@@ -556,10 +560,13 @@ def generate_coarse(
     temp=0.7,
     top_k=None,
     top_p=None,
+    use_gpu=True,
     silent=False,
     max_coarse_history=630,  # min 60 (faster), max 630 (more context)
     sliding_window_len=60,
     use_kv_caching=False,
+    model=None,
+    base=None,
 ):
     """Generate coarse audio codes from semantic tokens."""
     assert (
@@ -727,7 +734,10 @@ def generate_fine(
     x_coarse_gen,
     history_prompt=None,
     temp=0.5,
+    use_gpu=True,
     silent=True,
+    model=None,
+    base=None,
 ):
     """Generate full audio codes from coarse audio codes."""
     assert (

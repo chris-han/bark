@@ -3,6 +3,7 @@ from IPython.display import Audio
 from scipy.io.wavfile import write as write_wav
 import gradio as gr
 import os 
+import bark_infiniti
 
 voicePath = "bark/assets/prompts";
 files = os.listdir(voicePath)
@@ -19,9 +20,11 @@ def start(prompt, voice):
     #prompt = '\n'.join(prompts)
     
     if voice == None:
-        audio_array = generate_audio(prompt)
+        #audio_array,x = generate_audio(text=prompt)
+        audio_array = bark_infiniti.generate_long_audio(text=prompt)
     else:   
-        audio_array = generate_audio(prompt, history_prompt=npz_names[voice])
+        audio_array,x = generate_audio(text=prompt, history_prompt=npz_names[voice])
+        audio_array = bark_infiniti.generate_long_audio(text=prompt, history_prompt=npz_names[voice])
         
     write_wav("audio.wav", SAMPLE_RATE, audio_array)
     return "audio.wav"
@@ -40,7 +43,7 @@ with gr.Blocks() as demo:
         launch_button = gr.Button("Launch")   
   
     with gr.Column():
-        output = gr.Audio(label="Result")
+        output = gr.Audio(label="Result", type="numpy")
         
     launch_button.click(
         start,

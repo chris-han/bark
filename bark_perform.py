@@ -110,7 +110,7 @@ def save_audio_to_file(filepath, audio_array, sample_rate=24000, format='WAV', s
     print(f"Saved audio to {filepath}")
 
 
-def gen_and_save_audio(text_prompt, history_prompt=None, text_temp=0.7, waveform_temp=0.7, filename="", output_dir="bark_samples", split_by_words=0, split_by_lines=0, stable_mode=False, confused_travolta_mode=False, iteration=1):
+def gen_and_save_audio(text_prompt, history_prompt=None, text_temp=0.7, filename="", output_dir="bark_samples", split_by_words=0, split_by_lines=0, stable_mode=False, confused_travolta_mode=False, iteration=1):
     def generate_unique_filename(base_filename):
         name, ext = os.path.splitext(base_filename)
         unique_filename = base_filename
@@ -142,14 +142,7 @@ def gen_and_save_audio(text_prompt, history_prompt=None, text_temp=0.7, waveform
         if longer_than_14_seconds:
             print(f"Text Prompt could be too long, might want to try a shorter one or try splitting tighter.")
 
-        """     text: str,
-            history_prompt: Optional[str] = None,
-            text_temp: float = 0.7,
-            waveform_temp: float = 0.7,
-            silent: bool = False,
-            output_full: bool = False, """
-
-        audio_array, x = generate_audio(chunk, history_prompt, text_temp=text_temp, waveform_temp=waveform_temp, silent=False, output_full=False)
+        audio_array, x = generate_audio(chunk, history_prompt, text_temp=text_temp, base=base, confused_travolta_mode=confused_travolta_mode)
         if saveit is True and npzbase is None:
             npzbase = x
         if stable_mode:
@@ -192,22 +185,30 @@ def gen_and_save_audio(text_prompt, history_prompt=None, text_temp=0.7, waveform
 text_prompts = []
 
 text_prompt = """
-    ♪ We're no strangers to love ♪
-    ♪ You know the rules and so do I (do I) ♪
-    ♪ A full commitment's what I'm thinking of ♪
-    ♪ You wouldn't get this from any other guy ♪
+Former Harvard University chemist and department head Charles Lieber was sentenced on Wednesday to six months of house arrest for lying to US authorities about his role in the Thousand Talents Programme, one of a number of Chinese projects to recruit scientists and bolster research.\
+US District Judge Rya Zobel sentenced Lieber in Boston, where in December 2021 a jury convicted him in a case that stemmed from a former US Justice Department programme known as the China Initiative.\
+The initiative began in 2018 during president Donald Trump’s administration to counter suspected Chinese economic espionage and research theft, and it was criticised for impeding academic collaboration and fuelling anti-Asian bias. The US officially ended the programme in February 2021, one month into President Joe Biden’s administration, though some of the cases connected to it are still unresolved.\
+“I feel pretty strongly about the need to end the China Initiative, not just in name but also in fact,” said Jeremy Wu, founder of APA Justice, a civic group. “Lieber got what he asked for in terms of the sentencing, and that chapter of targeting and profiling people with access to China has to stop. It’s ruined so many lives and careers.
 """
 text_prompts.append(text_prompt)
 
-text_prompt = """
-    In the beginning the Universe was created. This has made a lot of people very angry and been widely regarded as a bad move.
-"""
-text_prompts.append(text_prompt)
+# text_prompt = """
+#     ♪ We're no strangers to love ♪
+#     ♪ You know the rules and so do I (do I) ♪
+#     ♪ A full commitment's what I'm thinking of ♪
+#     ♪ You wouldn't get this from any other guy ♪
+# """
+# text_prompts.append(text_prompt)
 
-text_prompt = """
-    A common mistake that people make when trying to design something completely foolproof is to underestimate the ingenuity of complete fools.
-"""
-text_prompts.append(text_prompt)
+# text_prompt = """
+#     In the beginning the Universe was created. This has made a lot of people very angry and been widely regarded as a bad move.
+# """
+# text_prompts.append(text_prompt)
+
+# text_prompt = """
+#     A common mistake that people make when trying to design something completely foolproof is to underestimate the ingenuity of complete fools.
+# """
+# text_prompts.append(text_prompt)
 
 
 def main(args):
@@ -262,9 +263,9 @@ def main(args):
             if args.iterations > 1: 
                 for iteration in range(1, args.iterations + 1):
                     print(f"Iteration {iteration} of {args.iterations}.")
-                    gen_and_save_audio(prompt, history_prompt, text_temp, waveform_temp, filename, output_dir, split_by_words, split_by_lines, stable_mode, confused_travolta_mode, iteration=iteration)
+                    gen_and_save_audio(prompt, history_prompt, text_temp, filename, output_dir, split_by_words, split_by_lines, stable_mode, confused_travolta_mode, iteration=iteration)
             else:
-                gen_and_save_audio(prompt, history_prompt, text_temp, waveform_temp, filename, output_dir, split_by_words, split_by_lines, stable_mode, confused_travolta_mode)
+                gen_and_save_audio(prompt, history_prompt, text_temp, filename, output_dir, split_by_words, split_by_lines, stable_mode, confused_travolta_mode)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 __pycache__/
 build/
 venv/
+bark_samples/
 suno_bark.egg-info/
 audio.wav
 Untitled.ipynb
